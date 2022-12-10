@@ -13,15 +13,18 @@ const groupSize = 14
 func main() {
 	input := bufio.NewReader(os.Stdin)
 	group := make([]byte, groupSize)
+
 	_, err := io.ReadFull(input, group)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	examinedChars := groupSize
 	if !containsDuplicates(group) {
 		fmt.Println(examinedChars)
 		return
 	}
+
 	for {
 		examinedChars++
 		newByte, err := input.ReadByte()
