@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 )
 
 const y = 1
@@ -31,24 +32,32 @@ func main() {
 		fieldMap = append(fieldMap, []rune(string(line)))
 	}
 
-	var startPos [2]int
+	//var startPos [2]int
+	startPoses := make([][2]int, 0)
 	var endPos [2]int
 	for y, line := range fieldMap {
 		for x, letter := range line {
-			if letter == 'S' {
-				startPos = [2]int{x, y}
+			//if letter == 'S' {
+			//	startPos = [2]int{x, y}
+			//}
+			if letter == 'S' || letter == 'a' {
+				startPoses = append(startPoses, [2]int{x, y})
 			}
 			if letter == 'E' {
 				endPos = [2]int{x, y}
 			}
 		}
 	}
-	unvisitedNodes := make([]*node, 0)
-	unvisitedNodes = append(unvisitedNodes, &node{pos: startPos, value: 0})
-	visited := make(map[[2]int]*node, 0)
-	wayLen := wayLenTo(endPos, unvisitedNodes, fieldMap, visited)
 
-	fmt.Println(wayLen)
+	foundLens := make([]int, 0)
+	for _, startPos := range startPoses {
+		unvisitedNodes := make([]*node, 0)
+		unvisitedNodes = append(unvisitedNodes, &node{pos: startPos, value: 0})
+		visited := make(map[[2]int]*node, 0)
+		foundLens = append(foundLens, wayLenTo(endPos, unvisitedNodes, fieldMap, visited))
+	}
+	sort.Ints(foundLens)
+	fmt.Println(foundLens)
 }
 
 func wayLenTo(end [2]int, unvisited []*node, fieldMap [][]rune, nodeRegistry map[[2]int]*node) int {
